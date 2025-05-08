@@ -38,6 +38,7 @@ def dl_and_convert(url):
         '--audio-quality','0',
         '--quiet',
         '-o','downloads/video-audio.mp3',
+        '--force-overwrites',
         url
     ]
 
