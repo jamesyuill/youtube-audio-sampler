@@ -3,7 +3,7 @@ import os
 import soundfile as sf
 
 def cut_up_audio(path):
-    print('analysing audio...')
+    print('Analysing audio...')
 
     audio_path = "downloads/video-audio.mp3"
     y, sr = librosa.load(audio_path)
@@ -30,7 +30,7 @@ def cut_up_audio(path):
     beat_duration = int(sr * 60 / tempo )
     half_beat_duration = beat_duration//2
 
-    print('cutting up audio...')
+    print('Cutting up audio...')
 
     for i, (bar, beat) in enumerate(targets):
         beat_index = (bar - 1) * 4 + (beat - 1)

@@ -10,7 +10,7 @@ def scrape_web(query):
 
 
 def start_scraping(query):
-    print('scraping...')
+    print('Scraping...')
     Thread(target=scrape_web(query)).start()
 
 query = input('give me a word: ')
