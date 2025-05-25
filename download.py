@@ -25,7 +25,7 @@ def scrape_youtube(query):
             url_list.append(f"https://www.youtube.com{href}")
 
     driver.quit()
-    return url_list
+    return set(url_list)
 
 
 

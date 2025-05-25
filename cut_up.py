@@ -2,7 +2,7 @@ import librosa
 import os
 import soundfile as sf
 
-def cut_up_audio(path):
+def cut_up_audio(path, folder):
     print('Analysing audio...')
 
     audio_path = "downloads/video-audio.mp3"
@@ -13,7 +13,7 @@ def cut_up_audio(path):
 
     beat_samples = librosa.frames_to_samples(beat_frames)
 
-    output_dir = 'temp'
+    output_dir = folder
     os.makedirs(output_dir, exist_ok=True)
 
     targets = [
