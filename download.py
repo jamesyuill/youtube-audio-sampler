@@ -1,5 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
 import time
 import subprocess
@@ -17,15 +20,25 @@ def scrape_youtube(query):
 
     soup = BeautifulSoup(driver.page_source, 'html.parser')
 
+    reel_shelves = soup.find_all('ytd-reel-shelf-renderer')
+
+
     url_list = []
 
-    for a_tag in soup.find_all('a', href=True):
-        href = a_tag['href']
-        if '/watch?v=' in href:
-            url_list.append(f"https://www.youtube.com{href}")
+    for shelf in reel_shelves:
+        for a_tag in shelf.find_all('a', href=True):
+            href = a_tag['href']
+            img_tag = a_tag.img
+
+            #watch?v=
+            if '/shorts/' in href and img_tag and 'src' in img_tag.attrs:
+                img_src  =img_tag['src']
+                url = f"https://www.youtube.com{href}"
+                url_list.append({'img_src':img_src, 'url':url})
+
 
     driver.quit()
-    return set(url_list)
+    return url_list
 
 
 

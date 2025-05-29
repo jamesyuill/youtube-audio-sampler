@@ -38,15 +38,19 @@ def home():
 
 @app.get('/get-list')
 def get_list(search_query: str):
-    
+    #create unique temp folder
+    global folder_name
+    folder_name = create_user_folder()
+
     url_list = scrape_youtube(search_query)
-    return {"url_list":url_list}
+    return {"url_list":url_list, "folder_name":folder_name}
     
 
 @app.get('/scrape-audio')
 def scrape_audio(url:str):
-    #create unique temp folder
-    folder_name = create_user_folder()
+
+    
+    #also need to create a unique download folder too
 
     #mounts the temp folder as audio
     app.mount('/audio',StaticFiles(directory=folder_name),name='audio')
