@@ -5,13 +5,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 import os
-import uuid
+
 import shutil
 from download import scrape_youtube, dl_and_convert
+from create_folder import create_user_folder
 from cut_up import cut_up_audio
 
 app = FastAPI()
 
+#need to change this for frontend obvs!!!
 origins = [
     'http://127.0.0.1:5500'
 ]
@@ -20,12 +22,7 @@ app.add_middleware(CORSMiddleware, allow_origins=origins, allow_credentials=True
 
 
 
-#Creates unique user_id and unique folder for that user
-def create_user_folder():
-    user_id = uuid.uuid4()
-    folder_name = f'temp-{user_id}'
-    os.mkdir(folder_name)
-    return folder_name
+
 
 
 
@@ -78,15 +75,3 @@ def download(folder_name:str,file_name:str):
         filename=file_name,
         headers={'Content-Disposition':f'attachment; filename={file_name}'}
     )
-
-
-
-@app.get('/delete-temp-folder')
-def delete_temp_folder(folder_name:str):
-    try:
-        #look for temp folder
-        if os.path.exists(f'./{folder_name}'):
-            shutil.rmtree(f'./{folder_name}')
-            return {'msg':f'{folder_name} deleted'}
-    except:
-        return {'msg':'Folder not found'}
