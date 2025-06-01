@@ -17,14 +17,23 @@ def cut_up_audio(path, folder):
     os.makedirs(output_dir, exist_ok=True)
 
     targets = [
-        (4, 1),
+        (1, 1),
+        (1, 2),
+        (1, 3), 
+        (1, 4), 
+        (2, 1),
         (2, 2),
-        (8, 3), 
-        (6, 4), 
-        (10,5),
-        (20,3),
-        (3,19),
-        (8,12)
+        (2, 3),
+        (2, 4),
+        (3, 1),
+        (3, 2),
+        (3, 3), 
+        (3, 4), 
+        (4, 1),
+        (4, 2),
+        (4, 3),
+        (4, 4),
+        
     ]
 
     beat_duration = int(sr * 60 / tempo )
@@ -40,7 +49,7 @@ def cut_up_audio(path, folder):
             continue
 
         start_sample = beat_samples[beat_index]
-        end_sample = start_sample + half_beat_duration
+        end_sample = start_sample + beat_duration
 
         clip = y[start_sample:end_sample]
         output_path = os.path.join(output_dir, f"sample_{i}.wav")

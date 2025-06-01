@@ -13,7 +13,7 @@ import subprocess
 def scrape_youtube(query):
 
     options = Options()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     driver = webdriver.Chrome(options=options)
 
     driver.get(f"https://www.youtube.com/results?search_query={query}")
@@ -51,8 +51,9 @@ def scrape_youtube(query):
     for a_tag in shorts:
         if 'href' in a_tag.attrs:
             href = a_tag['href']
-            url = f"https://www.youtube.com{href}"
-            url_list.append(url)
+            if '/shorts/' in href:
+                url = f"https://www.youtube.com{href}"
+                url_list.append(url)
 
 
 
