@@ -107,7 +107,6 @@ def download(folder_name:str,file_name:str):
 @app.get('/save_file/{folder_name}/{file_name}')
 def save_file(folder_name:str,file_name:str):
     filepath = os.path.join(BASE_DIR, folder_name, file_name)
-    print('filepath', filepath)
     downloads_path = os.path.expanduser("~/Downloads")
     try:
         if not os.path.exists(filepath):
@@ -126,23 +125,29 @@ def DeleteFileBackground(path):
 
 @app.get('/download-all/{folder_name}')
 def download_all(folder_name:str):
-    ZIP_NAME = "all_samples.zip"
+    downloads_path = os.path.expanduser("~/Downloads")
+    
+    try:
+        ZIP_NAME = "all_samples.zip"
+        temp_file = tempfile.NamedTemporaryFile(dir=BASE_DIR,suffix=".zip", delete=False)
+        temp_file.close()
 
-    temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
-    temp_file.close()
+        folderpath = os.path.join(BASE_DIR, folder_name)
+        temp_file_name = shutil.make_archive(base_name=temp_file.name[:-4], format='zip',root_dir=folderpath)
+    except Exception as e:
+        return {'msg':f'an error occured whilst creating the temp zip folder:{e}'}
 
-    folderpath = os.path.join(BASE_DIR, folder_name)
-    shutil.make_archive(base_name=temp_file.name[:-4], format='zip',root_dir=folderpath)
 
-    return FileResponse(
-        path=temp_file.name,
-        filename=ZIP_NAME,
-        media_type='application/zip',
-        headers={
-            "Cache-Control":"no-store"
-        },
-        background=DeleteFileBackground(temp_file.name)
-    )
+    try:
+        zip_path = os.path.join(BASE_DIR, temp_file_name)
+        shutil.copy2(zip_path,downloads_path)
+        
+        #removes temp zip folder
+        os.remove(zip_path)
+        
+        return {'msg':'folder saved'}
+    except Exception as e:
+        return {'msg':f'an error occured:{e}'}
 
 
 if __name__ == "__main__":
