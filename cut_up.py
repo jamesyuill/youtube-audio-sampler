@@ -2,18 +2,18 @@ import librosa
 import os
 import soundfile as sf
 
-def cut_up_audio(path, folder):
+def cut_up_audio(base_path, folder):
     print('Analysing audio...')
 
-    audio_path = "downloads/video-audio.mp3"
-    y, sr = librosa.load(audio_path)
+    path = base_path + '/' + '/downloads/video-audio.mp3'
+    y, sr = librosa.load(path)
 
     tempo, beat_frames = librosa.beat.beat_track(y=y,sr=sr)
     print(f'tempo: {tempo}')
 
     beat_samples = librosa.frames_to_samples(beat_frames)
 
-    output_dir = folder
+    output_dir = base_path + '/' + folder
     os.makedirs(output_dir, exist_ok=True)
 
     targets = [

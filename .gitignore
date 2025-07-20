@@ -1,5 +1,5 @@
-/__pycache__
 /venv
-/samples
-/downloads
 /temp
+/downloads
+/__pycache__
+/**temp**

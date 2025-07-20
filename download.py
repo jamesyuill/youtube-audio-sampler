@@ -69,7 +69,7 @@ def scrape_youtube(query):
 
 
 
-def dl_and_convert(url):
+def dl_and_convert(base_path, url):
 
     yt_dlp_command = [
         'yt-dlp',
@@ -77,7 +77,7 @@ def dl_and_convert(url):
         '--audio-format','mp3',
         '--audio-quality','0',
         '--quiet',
-        '-o','downloads/video-audio.mp3',
+        '-o',f'{base_path}/downloads/video-audio.mp3',
         '--force-overwrites',
         url
     ]
