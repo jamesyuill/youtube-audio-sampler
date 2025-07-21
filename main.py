@@ -3,6 +3,7 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -92,34 +93,44 @@ def play(folder_name: str, file_name:str):
     )
 
 
-@app.get('/download/{folder_name}/{file_name}')
-def download(folder_name:str,file_name:str):
-    filepath = os.path.join(BASE_DIR, folder_name, file_name)
-    if not os.path.exists(filepath):
-        return {'msg':'File not found'}
-    return FileResponse(
-        path=filepath,
-        media_type="application/octet-stream",
-        filename=file_name,
-        headers={'Content-Disposition':f'attachment; filename={file_name}'}
-    )
 
 @app.get('/save_file/{folder_name}/{file_name}')
 def save_file(folder_name:str,file_name:str):
     filepath = os.path.join(BASE_DIR, folder_name, file_name)
-    downloads_path = os.path.expanduser("~/Downloads")
+    downloads_path = os.path.join(os.path.expanduser("~/Downloads"),file_name)
+    destination_path = get_unique_path(downloads_path)
     try:
-        if not os.path.exists(filepath):
-            return {'msg':'File not found'}
         
-        shutil.copy2(filepath,downloads_path)
+        shutil.copy2(filepath,destination_path)
         return {'msg':'file saved'}
     except Exception as e:
-        return {'msg':f'an error occured:{e}'}
+        import traceback
+        return {'msg':f'an error occured:{e}','trace':traceback.format_exc()}
+
 
 
 def DeleteFileBackground(path):
     return BackgroundTask(lambda: os.remove(path))
+
+
+
+def get_unique_path(path_str:str)-> Path:
+    path = Path(path_str)
+    if not path.exists():
+        return path
+    
+    counter = 1
+    stem = path.stem
+    suffix = path.suffix
+    parent = path.parent
+    while True:
+        new_name = f'{stem}({counter}){suffix}'
+        new_path = parent / new_name
+        if not new_path.exists():
+            return new_path
+        counter += 1
+
+
 
 
 
